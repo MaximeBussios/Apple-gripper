@@ -1,0 +1,119 @@
+#include <Servo.h> 
+#define dirPin 8
+#define stepPin 9
+int servoPin = 10; 
+Servo Servo1; 
+int switch1 = 3; //switch at the first apple
+int switch2 = 4; //switch at the delivery
+int pb1 = 5; //push button for apple 1
+int pb2 = 6; //push button for apple 2
+int pb3 = 7; //push button for apple 3
+#define delay1 5
+int angle_down = 180; //down angle for servo
+int angle_up = 80; //top angle for servo
+int n1 = 415; //steps to reach second position
+int n2 = 842; // to reach third position
+
+
+
+void setup() {
+  // Declare pins as output:
+  pinMode(stepPin, OUTPUT);
+  pinMode(dirPin, OUTPUT);
+  Servo1.attach(servoPin); 
+  pinMode(switch1, INPUT); 
+  pinMode(switch2, INPUT); 
+  pinMode(pb1, INPUT); 
+  pinMode(pb2, INPUT); 
+  pinMode(pb3, INPUT); 
+  Servo1.write(180);
+}
+
+void loop() {
+  delay(1000);
+  if( (digitalRead(pb1) == HIGH)) 
+  {
+    move_servoup(angle_up);
+    move_stepper2(switch2, LOW);
+    deliver();
+    reset(0);
+  }
+
+  else if( (digitalRead(pb2) == HIGH) ) 
+  {
+    move_stepper1(n1, LOW);
+    move_servoup(angle_up);
+    move_stepper2(switch2,LOW);
+    deliver();
+    reset(n1);
+  }
+    else if( (digitalRead(pb3) == HIGH)) 
+  {
+    move_stepper1(n2, LOW);
+    move_servoup(angle_up);
+    move_stepper2(switch2,LOW);
+    deliver();
+    reset(n2);
+  }
+  else{delay(1000);}
+  delay(100);
+
+  }
+
+  void move_stepper1(int n, bool dir) {
+    digitalWrite(dirPin, dir);
+
+    for(int i =0; i<n ; i++){
+      digitalWrite(stepPin, HIGH);
+      delay(delay1);
+      digitalWrite(stepPin, LOW);
+      delay(delay1);
+      }
+    
+    }
+
+
+  void move_stepper2(int Lswitch, bool dir) {
+    digitalWrite(dirPin, dir);
+
+    while(digitalRead(Lswitch) == LOW){
+      digitalWrite(stepPin, HIGH);
+      delay(delay1);
+      digitalWrite(stepPin, LOW);
+      delay(delay1);
+      }
+    
+    }
+
+  void move_servoup(int angle) {
+      for ( angle = 180; angle >= 80; angle -= 1) { 
+        Servo1.write(angle);             
+        delay(50);                       
+        angle = angle-1;
+      
+    }}
+    
+  void move_servodown(int angle) {
+      for ( angle = 80; angle <= 180; angle += 1) {       
+        Servo1.write(angle);              
+        delay(50);                       
+        angle = angle+1;
+      
+    }
+    delay(1000);
+    }
+
+  void deliver() {
+    move_servodown(angle_down);
+    }
+    
+  void reset(int n) {
+    move_servoup(angle_up);
+    move_stepper2(3,HIGH);
+    move_stepper1(n,LOW);
+    move_servodown(angle_down);
+    move_stepper2(3,HIGH);
+      }
+    
+    
+  

@@ -11,9 +11,9 @@ int pb3 = 7; //push button for apple 3
 #define delay1 5
 int angle_down = 180; //down angle for servo
 int angle_up = 80; //top angle for servo
-int n1 = 415;
-int n2 = 842;
-int n3 = 1800;
+int n1 = 415; //steps to reach second apple
+int n2 = 842; //steps to reach third position
+int n3 = 1800; //steps between the 2 sides
 
 
 
@@ -32,40 +32,40 @@ void setup() {
 
 void loop() {
   delay(1000);
-  if( (digitalRead(pb1) == HIGH) && (digitalRead(pb2) == LOW) ) 
+  if( (digitalRead(pb1) == HIGH) && (digitalRead(pb2) == LOW) ) //If only the first button is pushed
   {
-    move_servoup(angle_up);
-    move_stepper2(switch2, LOW);
-    deliver();
-    reset(0);
+    move_servoup(angle_up);   //put the arm vertically
+    move_stepper2(switch2, LOW); //move toward the delivery place
+    deliver(); //put the arm down
+    reset(0); //Go back to the initial position
   }
 
-  else if( (digitalRead(pb2) == HIGH) && (digitalRead(pb1) == LOW) ) 
+  else if( (digitalRead(pb2) == HIGH) && (digitalRead(pb1) == LOW) ) //If only the second button is pushed
   {
-    move_stepper1(n1, LOW);
-    move_servoup(angle_up);
-    move_stepper2(switch2,LOW);
-    deliver();
-    reset(n1);
+    move_stepper1(n1, LOW); //move from the initial position to the second apple position
+    move_servoup(angle_up); //put the arm vertically
+    move_stepper2(switch2,LOW); //move toward the delivery place
+    deliver(); //put the arm down
+    reset(n1); //Go back to the initial position
   }
-    else if( (digitalRead(pb2) == HIGH) && (digitalRead(pb1) == HIGH)) 
+    else if( (digitalRead(pb2) == HIGH) && (digitalRead(pb1) == HIGH)) //If both the buttons are pushed
   {
-    move_stepper1(n2, LOW);
-    move_servoup(angle_up);
-    move_stepper2(switch2,LOW);
-    deliver();
-    reset(n2);
+    move_stepper1(n2, LOW); //move frome the initial position to the third apple
+    move_servoup(angle_up); //put the arm vertically
+    move_stepper2(switch2,LOW); //move toward the delivery place
+    deliver(); //put the arm down
+    reset(n2); //go back to the inital position
   }
   else{delay(1000);}
   delay(100);
 
   }
 
-  void move_stepper1(int n, bool dir) {
-    digitalWrite(dirPin, dir);
+  void move_stepper1(int n, bool dir) { //For moving the stepper motor of n steps in dir direction
+    digitalWrite(dirPin, dir); //set the direction accordingly to the variable dir
 
-    for(int i =0; i<n ; i++){
-      digitalWrite(stepPin, HIGH);
+    for(int i =0; i<n ; i++){ //Do n steps
+      digitalWrite(stepPin, HIGH); //The 4 lines results in 1 step
       delay(delay1);
       digitalWrite(stepPin, LOW);
       delay(delay1);
@@ -74,11 +74,11 @@ void loop() {
     }
 
 
-  void move_stepper2(int Lswitch, bool dir) {
-    digitalWrite(dirPin, dir);
+  void move_stepper2(int Lswitch, bool dir) { //For moving the stepper motor untill a switch is activated
+    digitalWrite(dirPin, dir); //set the direction accordingly to the variable dir
 
-    while(digitalRead(Lswitch) == LOW){
-      digitalWrite(stepPin, HIGH);
+    while(digitalRead(Lswitch) == LOW){ //Make 1 extra step as long as the selected switch isn't pushed.
+      digitalWrite(stepPin, HIGH); //The 4 lines results in 1 step
       delay(delay1);
       digitalWrite(stepPin, LOW);
       delay(delay1);
@@ -86,34 +86,34 @@ void loop() {
     
     }
 
-  void move_servoup(int angle) {
-      for ( angle = 180; angle >= 80; angle -= 1) { 
-        Servo1.write(angle);             
-        delay(50);                       
-        angle = angle-1;
+  void move_servoup(int angle) { //To move the servo motor vertically
+      for ( angle = 180; angle >= 80; angle -= 1) { //Do 1° each time to be able to introduce a delay to control the speed of the process
+        Servo1.write(angle);             //Put the servo to the desired angle
+        delay(50);                       //wait a bit
+        angle = angle-1;                 //indicate to the for loop where we are in the motion
       
     }}
     
-  void move_servodown(int angle) {
-      for ( angle = 80; angle <= 180; angle += 1) {       
-        Servo1.write(angle);              
-        delay(50);                       
-        angle = angle+1;
+  void move_servodown(int angle) { //To move the servo down
+      for ( angle = 80; angle <= 180; angle += 1) {       //Do 1° each time to be able to introduce a delay to control the speed of the process
+        Servo1.write(angle);              //Put the servo to the desired angle
+        delay(50);                        //wait a bit
+        angle = angle+1;                  //indicate to the for loop where we are in the motion
       
     }
     delay(1000);
     }
 
-  void deliver() {
+  void deliver() { //put the arm down
     move_servodown(angle_down);
     }
     
-  void reset(int n) {
-    move_servoup(angle_up);
-    move_stepper1(n3,HIGH);
-    move_stepper1(n,LOW);
-    move_servodown(angle_down);
-    move_stepper1(n,HIGH);
+  void reset(int n) { //Go from the delivery place to the initial position
+    move_servoup(angle_up); //put the arm vertically
+    move_stepper1(n3,HIGH); //Go to the opposite side as the first switch doesn't work
+    move_stepper1(n,LOW); //Go to the place where the apple has been taken
+    move_servodown(angle_down); //Put the arm down
+    move_stepper1(n,HIGH); //Go back to the initial position, where the broken switch should be
       }
     
     

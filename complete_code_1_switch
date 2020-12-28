@@ -5,15 +5,15 @@ int servoPin = 10;
 Servo Servo1; 
 int switch1 = 3; //switch at the first apple
 int switch2 = 4; //switch at the delivery
-int pb1 = 5; //push button for apple 1
-int pb2 = 6; //push button for apple 2
-int pb3 = 7; //push button for apple 3
+int pb1 = 5;     //push button for apple 1
+int pb2 = 6;     //push button for apple 2
+int pb3 = 7;     //push button for apple 3
 #define delay1 5
 int angle_down = 180; //down angle for servo
-int angle_up = 80; //top angle for servo
-int n1 = 415; //steps to reach second apple
-int n2 = 842; //steps to reach third position
-int n3 = 1800; //steps between the 2 sides
+int angle_up = 80;    //top angle for servo
+int n1 = 415;         //steps to reach second apple
+int n2 = 842;         //steps to reach third position
+int n3 = 1800;        //steps between the 2 sides
 
 
 
@@ -34,27 +34,27 @@ void loop() {
   delay(1000);
   if( (digitalRead(pb1) == HIGH) && (digitalRead(pb2) == LOW) ) //If only the first button is pushed
   {
-    move_servoup(angle_up);   //put the arm vertically
-    move_stepper2(switch2, LOW); //move toward the delivery place
-    deliver(); //put the arm down
-    reset(0); //Go back to the initial position
+    move_servoup(angle_up);       //put the arm vertically
+    move_stepper2(switch2, LOW);  //move toward the delivery place
+    deliver();                    //put the arm down
+    reset(0);                     //Go back to the initial position
   }
 
   else if( (digitalRead(pb2) == HIGH) && (digitalRead(pb1) == LOW) ) //If only the second button is pushed
   {
-    move_stepper1(n1, LOW); //move from the initial position to the second apple position
-    move_servoup(angle_up); //put the arm vertically
+    move_stepper1(n1, LOW);     //move from the initial position to the second apple position
+    move_servoup(angle_up);     //put the arm vertically
     move_stepper2(switch2,LOW); //move toward the delivery place
-    deliver(); //put the arm down
-    reset(n1); //Go back to the initial position
+    deliver();                  //put the arm down
+    reset(n1);                  //Go back to the initial position
   }
     else if( (digitalRead(pb2) == HIGH) && (digitalRead(pb1) == HIGH)) //If both the buttons are pushed
   {
-    move_stepper1(n2, LOW); //move frome the initial position to the third apple
-    move_servoup(angle_up); //put the arm vertically
+    move_stepper1(n2, LOW);     //move frome the initial position to the third apple
+    move_servoup(angle_up);     //put the arm vertically
     move_stepper2(switch2,LOW); //move toward the delivery place
-    deliver(); //put the arm down
-    reset(n2); //go back to the inital position
+    deliver();                  //put the arm down
+    reset(n2);                  //go back to the inital position
   }
   else{delay(1000);}
   delay(100);
@@ -109,11 +109,11 @@ void loop() {
     }
     
   void reset(int n) { //Go from the delivery place to the initial position
-    move_servoup(angle_up); //put the arm vertically
-    move_stepper1(n3,HIGH); //Go to the opposite side as the first switch doesn't work
-    move_stepper1(n,LOW); //Go to the place where the apple has been taken
+    move_servoup(angle_up);     //put the arm vertically
+    move_stepper1(n3,HIGH);     //Go to the opposite side as the first switch doesn't work
+    move_stepper1(n,LOW);       //Go to the place where the apple has been taken
     move_servodown(angle_down); //Put the arm down
-    move_stepper1(n,HIGH); //Go back to the initial position, where the broken switch should be
+    move_stepper1(n,HIGH);      //Go back to the initial position, where the broken switch should be
       }
     
     
